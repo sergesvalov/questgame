@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сэр Галахад: Забытый Рыцарь</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        /* Общие стили для фона и шрифта */
+        body { font-family: 'Inter', sans-serif; background-color: #f7f3e8; }
+        /* Ограничитель ширины игрового контейнера */
+        .game-container { max-width: 1000px; }
+        /* Стиль боковой панели (темный, средневековый) */
+        .sidebar { background-color: #3b3a30; color: #e8e8e8; }
+        /* Стиль кнопок выбора */
+        .button-choice { 
+            background-color: #5d5c56; 
+            border: 1px solid #7d7d7d;
+            transition: all 0.1s ease;
+        }
+        /* Эффект при наведении на кнопки выбора */
+        .button-choice:hover {
+            background-color: #7d7d7d;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Область для прокрутки текста сюжета */
+        .text-scroll { max-height: 400px; overflow-y: auto; }
+        /* Цвет текста истории (контраст с фоном) */
+        .text-story { color: #3b3a30; }
+        /* Стиль активной кнопки языка */
+        .lang-button.active { background-color: #7d7d7d; }
+    </style>
+</head>
+<body>
+    <!-- Центральный контейнер, чтобы игра была по центру экрана -->
+    <div class="min-h-screen flex justify-center items-center p-4">
+        <!-- Основной игровой блок с тенью и скругленными углами -->
+        <div class="game-container w-full bg-white shadow-2xl rounded-lg flex flex-col md:flex-row overflow-hidden">
+            
+            <!-- Левая панель: Инвентарь и Статус (Сайдбар) -->
+            <div class="sidebar w-full md:w-1/3 p-4 md:p-6 flex flex-col justify-between">
+                <div>
+                    <!-- Заголовок Статуса/Инвентаря (Перевод) -->
+                    <h2 class="text-xl font-bold mb-4 border-b border-gray-500 pb-2">
+                        {% if current_lang == 'ru' %}
+                            Инвентарь и Статус
+                        {% elif current_lang == 'en' %}
+                            Inventory & Status
+                        {% elif current_lang == 'el' %}
+                            Απογραφή & Κατάσταση
+                        {% endif %}
+                    </h2>
+
+                    <!-- Блок Инвентаря -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-2">
+                            {% if current_lang == 'ru' %}
+                                Снаряжение:
+                            {% elif current_lang == 'en' %}
+                                Loot:
+                            {% elif current_lang == 'el' %}
+                                Λάφυρα:
+                            {% endif %}
+                        </h3>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            {% if inventory %}
+                                {% for item in inventory %}
+                                    <!-- Отображение предметов из сессии -->
+                                    <li class="text-green-300">{{ item }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="text-gray-400">
+                                    {% if current_lang == 'ru' %}
+                                        Пусто
+                                    {% elif current_lang == 'en' %}
+                                        Empty
+                                    {% elif current_lang == 'el' %}
+                                        Κενό
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- Блок Спутников -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-2">
+                            {% if current_lang == 'ru' %}
+                                Спутники:
+                            {% elif current_lang == 'en' %}
+                                Companions:
+                            {% elif current_lang == 'el' %}
+                                Συντροφιά:
+                            {% endif %}
+                        </h3>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            {% if companions %}
+                                {% for companion in companions %}
+                                    <!-- Отображение спутников из сессии -->
+                                    <li class="text-yellow-300">{{ companion }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="text-gray-400">
+                                    {% if current_lang == 'ru' %}
+                                        Один в пути
+                                    {% elif current_lang == 'en' %}
+                                        Traveling alone
+                                    {% elif current_lang == 'el' %}
+                                        Ταξιδεύετε μόνος
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- ASCII Арт Рыцаря -->
+                    <pre class="bg-gray-700 p-3 rounded-lg text-yellow-500 text-xs overflow-auto">{{ knight_art }}</pre>
+                </div>
+                
+                <!-- Меню выбора языка -->
+                <div class="mt-6 pt-4 border-t border-gray-500">
+                    <h3 class="text-sm font-semibold mb-2">
+                        {% if current_lang == 'ru' %}
+                            Язык
+                        {% elif current_lang == 'en' %}
+                            Language
+                        {% elif current_lang == 'el' %}
+                            Γλώσσα
+                        {% endif %}
+                        :
+                    </h3>
+                    <div class="flex space-x-2">
+                        {% for lang_code, lang_name in languages.items() %}
+                            <!-- Кнопка/ссылка для смены языка. Использует GET-параметр ?lang= -->
+                            <a href="{{ url_for('game', lang=lang_code) }}" 
+                                class="lang-button px-3 py-1 text-xs rounded-full 
+                                {% if lang_code == current_lang %} active {% else %} bg-gray-600 hover:bg-gray-500 {% endif %}">
+                                {{ lang_name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Кнопка перезапуска игры -->
+                <a href="{{ url_for('game', restart=True) }}" 
+                   class="mt-4 block text-center py-2 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold transition">
+                    {% if current_lang == 'ru' %}
+                        Начать заново
+                    {% elif current_lang == 'en' %}
+                        Restart Game
+                    {% elif current_lang == 'el' %}
+                        Επανεκκίνηση
+                    {% endif %}
+                </a>
+            </div>
+
+            <!-- Правая панель: Сюжет и Выбор -->
+            <div class="w-full md:w-2/3 p-4 md:p-8">
+                <!-- Главный заголовок -->
+                <h1 class="text-2xl font-extrabold mb-6 text-center text-story">
+                    {% if current_lang == 'ru' %}
+                        Сэр Галахад: Забытый Рыцарь
+                    {% elif current_lang == 'en' %}
+                        Sir Galahad: The Forgotten Knight
+                    {% elif current_lang == 'el' %}
+                        Ο Σερ Γκάλαχαντ: Ο Ξεχασμένος Ιππότης
+                    {% endif %}
+                </h1>
+                
+                <!-- Блок с текстом сцены -->
+                <div class="text-scroll mb-8 p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <!-- Основной текст сцены -->
+                    <p class="text-story whitespace-pre-wrap">{{ scene.text }}</p>
+                    {% if scene.question %}
+                        <!-- Если есть дополнительный вопрос/призыв к действию -->
+                        <p class="mt-4 font-semibold text-story">
+                            {% if current_lang == 'ru' %}
+                                Вопрос:
+                            {% elif current_lang == 'en' %}
+                                Question:
+                            {% elif current_lang == 'el' %}
+                                Ερώτηση:
+                            {% endif %}
+                            {{ scene.question }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Форма для отправки выбора игрока (POST запрос в app.py) -->
+                <form method="POST">
+                    <div class="space-y-3">
+                        {% if scene.choices %}
+                            <!-- Кнопки выбора, каждая из которых отправляет ID следующей сцены -->
+                            {% for choice in scene.choices %}
+                                <button type="submit" name="next_scene" value="{{ choice.next_scene }}" 
+                                        class="button-choice w-full text-left p-3 rounded-lg text-white font-medium">
+                                    {{ choice.label }}
+                                </button>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Сообщение, если выбора нет (конец ветки) -->
+                            <p class="text-center p-4 bg-yellow-100 text-yellow-800 rounded-lg">
+                                {% if current_lang == 'ru' %}
+                                    Конец текущей ветки. Нажмите "Начать заново" для продолжения.
+                                {% elif current_lang == 'en' %}
+                                    End of the current branch. Click "Restart Game" to continue.
+                                {% elif current_lang == 'el' %}
+                                    Τέλος του τρέχοντος κλάδου. Πατήστε "Επανεκκίνηση" για να συνεχίσετε.
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
