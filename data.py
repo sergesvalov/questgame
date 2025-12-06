@@ -173,7 +173,7 @@ SCENARIOS = {
                 {"label": "Собрать силы и развести костер", "next_scene": "dwarf_village"}
             ]
         },
-        "sleep_cold": {"text": "Холод пробирает до костей...", "choices": [{"label": "...", "next_scene": "city_arrest"}]},
+        "sleep_cold": {"text": "Холод пробирает до костей, сознание угасает...", "choices": [{"label": "...", "next_scene": "city_arrest"}]},
         "dwarf_village": {
             "text": (
                 "Всю ночь вы грелись у огня, а утром вышли к подножию гор. "
@@ -292,93 +292,549 @@ SCENARIOS = {
     },
     
     'en': {
+        # === PROLOGUE ===
         "start": {
-            "text": "You wake up on damp earth. No memory. No horse.",
+            "text": (
+                "Consciousness returns in jolts, every breath echoing with a dull ache in your temples. "
+                "You lie on damp, musty earth, with the crowns of ancient pines rustling overhead. "
+                "The name 'Sir Galahad' pulses in your mind, but it feels alien, as if from a past life. "
+                "Your loyal steed is nowhere to be found, only broken branches hint at a struggle. "
+                "An old path, barely visible in the twilight, forks in two."
+            ),
             "image_type": "intro",
-            "question": "What do you do?",
+            "question": "The forest oppresses with its grim grandeur. You must decide.",
             "choices": [
-                {"label": "Find horse", "next_scene": "find_horse_start"},
-                {"label": "Walk path", "next_scene": "meet_dwarves"},
-                {"label": "Wait", "next_scene": "stay_sad"}
+                {"label": "Look around for the horse's tracks", "next_scene": "find_horse_start"},
+                {"label": "Move decisively along the path", "next_scene": "meet_dwarves"},
+                {"label": "No strength. Stay put and wait", "next_scene": "stay_sad"}
             ]
         },
-        "stay_sad": {"text": "Monster!", "choices": [{"label": "Run", "next_scene": "run_to_edge"}]},
-        "run_to_edge": {"text": "City lights.", "choices": [{"label": "Guards", "next_scene": "city_arrest"}]},
-        "city_arrest": {"text": "Arrested.", "choices": [{"label": "Jail", "next_scene": "dungeon_cell"}]},
-        "dungeon_cell": {"text": "Cell.", "choices": [{"label": "Escape", "next_scene": "secret_passage"}]},
-        "secret_passage": {"text": "Old man.", "choices": [{"label": "Who?", "next_scene": "meet_sage"}]},
-        "meet_sage": {"text": "I am Alexei.", "new_companion": "Sage Alexei", "choices": [{"label": "Go", "next_scene": "sage_stream_journey"}]},
-        "sage_stream_journey": {"text": "Stream.", "choices": [{"label": "Rest", "next_scene": "sage_stream_lunch"}]},
-        "sage_stream_lunch": {"text": "Lunch.", "choices": [{"label": "Go", "next_scene": "stone_crossroad_sage"}]},
-        "stone_crossroad_sage": {"text": "Stone: Enchanted Right.", "choices": [{"label": "Right", "next_scene": "path_enchanted"}, {"label": "Left", "next_scene": "path_horseless"}]},
-        "find_horse_start": {"text": "Found bag.", "loot": ["Dagger", "Bread"], "choices": [{"label": "Track", "next_scene": "horse_found"}]},
-        "horse_found": {"text": "Found horse!", "loot": ["Sword", "Water"], "choices": [{"label": "Ride", "next_scene": "ride_away_river"}]},
-        "ride_away_river": {"text": "Stream stop.", "choices": [{"label": "Eat", "next_scene": "stream_rest"}]},
-        "stream_rest": {"text": "Ate bread.", "consume_loot": ["Bread"], "choices": [{"label": "Go", "next_scene": "stone_crossroad_horse"}]},
-        "stone_crossroad_horse": {"text": "Stone on horse.", "choices": [{"label": "Right", "next_scene": "path_enchanted"}, {"label": "Left", "next_scene": "path_horseless"}]},
-        "meet_dwarves": {"text": "Dwarves ran.", "loot": ["Gold"], "choices": [{"label": "Village", "next_scene": "dwarf_village"}]},
-        "dwarf_village": {"text": "Village.", "choices": [{"label": "Feast", "next_scene": "dwarf_feast"}]},
-        "dwarf_feast": {"text": "Feast.", "loot": ["Ale"], "choices": [{"label": "Sleep", "next_scene": "dwarf_sleep"}]},
-        "dwarf_sleep": {"text": "Sleep.", "choices": [{"label": "Wake", "next_scene": "dwarf_morning"}]},
-        "dwarf_morning": {"text": "Balin joins.", "new_companion": "Balin", "choices": [{"label": "Hike", "next_scene": "stone_crossroad_dwarf"}]},
-        "stone_crossroad_dwarf": {"text": "Stone with Balin.", "choices": [{"label": "Right", "next_scene": "path_enchanted"}, {"label": "Left", "next_scene": "path_horseless"}]},
-        "path_enchanted": {"text": "Magic air.", "choices": [{"label": "Tower", "next_scene": "tower_found"}]},
-        "tower_found": {"text": "Dark Tower.", "image_type": "tower", "choices": [{"label": "Enter", "next_scene": "tower_entrance"}]},
-        "tower_entrance": {"text": "Inside.", "choices": []},
-        
-        # TIME LOOP (LEFT PATH)
+
+        # === PATH 1: SAGE ALEXEI ===
+        "stay_sad": {
+            "text": (
+                "You remain sitting, clutching your knees, as darkness gathers. "
+                "Suddenly, a guttural growl erupts nearby, freezing the blood in your veins! "
+                "A massive shadow separates from the trees. Staying here means certain death."
+            ),
+            "choices": [{"label": "Jump up and run without looking back", "next_scene": "run_to_edge"}]
+        },
+        "run_to_edge": {
+            "text": (
+                "Branches whip your face as you dash through the thicket, ignoring the path. "
+                "Breath fails you, but you burst out onto the edge of the forest. "
+                "Ahead, like a saving beacon, shimmer the lights of the city walls."
+            ),
+            "choices": [{"label": "Approach the city guard", "next_scene": "city_arrest"}]
+        },
+        "city_arrest": {
+            "text": (
+                "You rush to the gates, but halberds block your way. "
+                "The guards inspect your torn doublet with disdain. "
+                "'No place for vagrants here,' barks the sergeant. 'The dungeon will sort out who you are.'"
+            ),
+            "choices": [{"label": "Too weak to argue. Surrender", "next_scene": "dungeon_cell"}]
+        },
+        "dungeon_cell": {
+            "text": (
+                "The damp cell smells of mold and hopelessness. "
+                "Sitting on straw, you realize your memory loss is a magical curse blocking your mind. "
+                "In anger, you strike the wall and notice a stone is loose."
+            ),
+            "choices": [{"label": "Push the stone with your shoulder", "next_scene": "secret_passage"}]
+        },
+        "secret_passage": {
+            "text": (
+                "The stone gives way, revealing a foul-smelling passage into the old sewers. "
+                "You crawl in the dark, scraping your elbows, and finally emerge into the moat. "
+                "You are dirty, exhausted, but finally free."
+            ),
+            "choices": [{"label": "Brush off and look around", "next_scene": "meet_sage"}]
+        },
+        "meet_sage": {
+            "text": (
+                "A figure in a gray cloak with a staff steps out from the wall's shadow. The old man's eyes shine with wisdom. "
+                "'Greetings, Galahad. I am Alexei,' he says softly. 'The Dark Alchemist stole your memory. "
+                "I have been waiting for you to help restore justice.'"
+            ),
+            "new_companion": "Sage Alexei",
+            "choices": [{"label": "Trust him and go with Alexei", "next_scene": "sage_stream_journey"}]
+        },
+        "sage_stream_journey": {
+            "text": (
+                "You walk with Alexei along secret paths until noon. "
+                "The old man proves surprisingly resilient. Soon you emerge at a picturesque forest stream."
+            ),
+            "choices": [{"label": "Rest by the water", "next_scene": "sage_stream_lunch"}]
+        },
+        "sage_stream_lunch": {
+            "text": (
+                "Alexei shares a modest meal with you. "
+                "Leaning down to drink, you see your reflection and realize with horror that you do not recognize the face. "
+                "The past has been wiped clean."
+            ),
+            "choices": [{"label": "Gather your courage and move on", "next_scene": "stone_crossroad_sage"}]
+        },
+        "stone_crossroad_sage": {
+            "text": (
+                "By evening, the forest gives way to an ancient road. "
+                "In the middle stands a mossy stone with a crudely carved inscription: "
+                "'THE ENCHANTED — RIGHT. THE HORSELESS — LEFT'. Alexei frowns thoughtfully."
+            ),
+            "choices": [
+                {"label": "Right (Path of the Enchanted)", "next_scene": "path_enchanted"},
+                {"label": "Left (Path of the Horseless)", "next_scene": "path_horseless"}
+            ]
+        },
+
+        # === PATH 2: HORSE ===
+        "find_horse_start": {
+            "text": (
+                "You crawl under the bushes, parting the ferns. "
+                "Finally, luck smiles upon you: you find your leather bag. "
+                "Inside lie an old trusty dagger and a piece of stale bread."
+            ),
+            "loot": ["Old Dagger", "Stale Bread"],
+            "choices": [{"label": "Follow the tracks further", "next_scene": "horse_found"}]
+        },
+        "horse_found": {
+            "text": (
+                "The tracks lead to a sunny clearing. There, peacefully grazing, stands your warhorse! "
+                "He neighs joyfully, recognizing his master. "
+                "On the saddle, you find true treasures: a sword, a full flask, and supplies."
+            ),
+            "loot": ["Knight's Sword", "Water Flask", "Lard Piece"],
+            "choices": [{"label": "Jump in the saddle and ride", "next_scene": "ride_away_river"}]
+        },
+        "ride_away_river": {
+            "text": (
+                "Wind whistles in your ears as you race away from the cursed place. "
+                "After hours of frantic riding, you halt the horse by a clear stream to catch your breath."
+            ),
+            "choices": [{"label": "Dismount and have lunch", "next_scene": "stream_rest"}]
+        },
+        "stream_rest": {
+            "text": (
+                "You greedily eat the bread, washing it down with ice-cold water. "
+                "Glancing into the mirror-like surface of the stream, you see a stranger's face. "
+                "Your memory is empty, scratching at your soul, but the warm flank of your horse soothes you."
+            ),
+            "consume_loot": ["Stale Bread"],
+            "choices": [{"label": "Ride on to the road", "next_scene": "stone_crossroad_horse"}]
+        },
+        "stone_crossroad_horse": {
+            "text": (
+                "The path leads you to an old imperial road. Soon, a massive stone blocks the way. "
+                "The inscription reads: 'THE ENCHANTED — RIGHT. THE HORSELESS — LEFT'. "
+                "The horse stomps impatiently, awaiting your command."
+            ),
+            "choices": [
+                {"label": "Turn Right (Path of the Enchanted)", "next_scene": "path_enchanted"},
+                {"label": "Turn Left (Path of the Horseless)", "next_scene": "path_horseless"}
+            ]
+        },
+
+        # === PATH 3: DWARVES ===
+        "meet_dwarves": {
+            "text": (
+                "You step decisively forward. Suddenly, two dwarves burst out from around the bend. "
+                "Seeing you, they panic, drop a heavy pouch, and vanish into the bushes. "
+                "Inside is gold, but the sun is setting, and the grave cold of the forest takes hold."
+            ),
+            "loot": ["Bag of Gold"],
+            "choices": [
+                {"label": "Fall on the moss and try to sleep", "next_scene": "sleep_cold"},
+                {"label": "Gather strength and build a fire", "next_scene": "dwarf_village"}
+            ]
+        },
+        "sleep_cold": {"text": "The cold chills you to the bone, consciousness fades...", "choices": [{"label": "...", "next_scene": "city_arrest"}]},
+        "dwarf_village": {
+            "text": (
+                "You warmed yourself by the fire all night, and in the morning reached the foot of the mountains. "
+                "There, carved into the rock, lies a village. "
+                "The Dwarf Elder comes out to meet you, surprised by your honesty."
+            ),
+            "choices": [{"label": "Return the gold to the owners", "next_scene": "dwarf_feast"}]
+        },
+        "dwarf_feast": {
+            "text": (
+                "In honor of the noble guest, the dwarves throw a feast! "
+                "They ask of your lineage and deeds, but you remain silent. "
+                "Trying to recall anything, you realize there is only fog in your head."
+            ),
+            "loot": ["Dwarf Ale", "Roasted Shank"],
+            "choices": [{"label": "Confess memory loss", "next_scene": "dwarf_sleep"}]
+        },
+        "dwarf_sleep": {
+            "text": (
+                "The dwarves shake their heads sympathetically. "
+                "'Tomorrow's counsel is best,' says the Elder and leads you to a soft bed. "
+                "You instantly fall into a deep sleep."
+            ),
+            "choices": [{"label": "Wake up at dawn", "next_scene": "dwarf_morning"}]
+        },
+        "dwarf_morning": {
+            "text": (
+                "You wake up full of strength. The Elder kept his word: "
+                "at the gates waits the stern tracker Balin, ready to guide you to the mages."
+            ),
+            "choices": [{"label": "Set off on the journey", "next_scene": "dwarf_hike_start"}]
+        },
+        "dwarf_hike_start": {
+            "text": (
+                "Balin checks his crossbow string and nods to you. "
+                "You leave the hospitable village and delve into the wild lands. "
+                "Your great quest for truth begins."
+            ),
+            "new_companion": "Tracker Balin",
+            "choices": [{"label": "Walk all day", "next_scene": "dwarf_night_camp"}]
+        },
+        "dwarf_night_camp": {
+            "text": (
+                "By nightfall, you find a cozy grotto. Balin builds a smokeless fire. "
+                "You go to sleep first while the dwarf takes watch, listening to the sounds of the night."
+            ),
+            "choices": [{"label": "Try to sleep", "next_scene": "dwarf_theft_attempt"}]
+        },
+        "dwarf_theft_attempt": {
+            "text": (
+                "You are woken by rustling and Balin's cursing! "
+                "Small cave creatures are trying to drag your belongings into the dark. "
+                "You must act immediately!"
+            ),
+            "choices": [{"label": "Grab a weapon and drive off the thieves", "next_scene": "stone_crossroad_dwarf"}]
+        },
+        "stone_crossroad_dwarf": {
+            "text": (
+                "You fight off the thieves and emerge onto the road in the morning. "
+                "Before you stands that very stone: 'THE ENCHANTED — RIGHT. THE HORSELESS — LEFT'. "
+                "Balin leans on his axe, awaiting a decision."
+            ),
+            "choices": [
+                {"label": "Right (Path of the Enchanted)", "next_scene": "path_enchanted"},
+                {"label": "Left (Path of the Horseless)", "next_scene": "path_horseless"}
+            ]
+        },
+
+        # === FINALE: TOWER ===
+        "path_enchanted": {
+            "text": (
+                "You turn right. The air becomes thick, viscous, and smells of ozone. "
+                "The trees around are twisted by magic, as if frozen in agony. "
+                "The road leads you to the source of your trouble."
+            ),
+            "choices": [{"label": "Continue to the goal", "next_scene": "tower_found"}]
+        },
+        "tower_found": {
+            "text": (
+                "The forest abruptly ends. On a scorched clearing stands the Tower of the Dark Alchemist. "
+                "Its spire of black obsidian pierces the sky, and dead silence reigns around. "
+                "The entrance door is slightly ajar, as if inviting you into a trap."
+            ),
+            "image_type": "tower",
+            "choices": [
+                {"label": "Boldly enter the main entrance", "next_scene": "tower_entrance"},
+                {"label": "Cautiously look for another way", "next_scene": "tower_side_entrance"}
+            ]
+        },
+        "tower_entrance": {
+            "text": "You push the heavy doors and enter the gloom. The echo of your footsteps rings through the hall... (Plot in development)",
+            "choices": []
+        },
+        "tower_side_entrance": {
+            "text": "Pushing aside thorny ivy, you find a narrow window to the basement. A chill blows from within... (Plot in development)",
+            "choices": []
+        },
+
+        # === TIME LOOP (LEFT PATH) ===
         "path_horseless": {
-            "text": "You go left. The path gets unnaturally dark.",
-            "choices": [{"label": "Ride on", "next_scene": "ambush_loop_hit"}]
+            "text": (
+                "You choose the left road, ignoring the warning. "
+                "At first, the path seems peaceful, birds sing, and the sun shines through the leaves. "
+                "But as soon as the sun touches the horizon, the forest instantly plunges into impenetrable, unnatural darkness."
+            ),
+            "choices": [{"label": "Ride on warily", "next_scene": "ambush_loop_hit"}]
         },
         "ambush_loop_hit": {
-            "text": "Hit to the head! You black out...",
-            "choices": [{"label": "Wake up", "next_scene": "start"}]
+            "text": (
+                "Suddenly, a whistle cuts through the air from behind! You don't have time to react. "
+                "A heavy blow from a club to the back of your head knocks the wind out of you. "
+                "The last thing you hear before fading into nothingness is a malicious, mocking laugh..."
+            ),
+            "choices": [{"label": "Wake up from the nightmare", "next_scene": "start"}]
         }
     },
+
     'el': {
+        # === ΠΡΟΛΟΓΟΣ ===
         "start": {
-            "text": "Ξυπνάτε. Δεν θυμάστε τίποτα.",
+            "text": (
+                "Η συνείδηση επιστρέφει με τραντάγματα, κάθε ανάσα αντηχεί με έναν υπόκωφο πόνο στους κροτάφους. "
+                "Κείθεστε σε υγρή, μουχλιασμένη γη, ενώ από πάνω θροΐζουν οι κορυφές αρχαίων πεύκων. "
+                "Το όνομα «Σερ Γκάλαχαντ» σφυροκοπά στο κεφάλι σας, μα μοιάζει ξένο, σαν από άλλη ζωή. "
+                "Το πιστό σας άλογο λείπει, μόνο σπασμένα κλαδιά μαρτυρούν πάλη. "
+                "Ένα παλιό μονοπάτι, μόλις ορατό στο λυκόφως, χωρίζεται στα δύο."
+            ),
             "image_type": "intro",
-            "question": "Τι κάνετε;",
+            "question": "Το δάσος καταπιέζει με τη σκοτεινή του μεγαλοπρέπεια. Πρέπει να αποφασίσετε.",
             "choices": [
-                {"label": "Ψάξτε άλογο", "next_scene": "find_horse_start"},
-                {"label": "Μονοπάτι", "next_scene": "meet_dwarves"},
-                {"label": "Περιμένετε", "next_scene": "stay_sad"}
+                {"label": "Κοιτάξτε γύρω για ίχνη του αλόγου", "next_scene": "find_horse_start"},
+                {"label": "Προχωρήστε αποφασιστικά στο μονοπάτι", "next_scene": "meet_dwarves"},
+                {"label": "Δεν έχω δύναμη. Μείνε και περίμενε", "next_scene": "stay_sad"}
             ]
         },
-        "stay_sad": {"text": "Τέρας!", "choices": [{"label": "Τρέξτε", "next_scene": "run_to_edge"}]},
-        "run_to_edge": {"text": "Πόλη.", "choices": [{"label": "Φρουροί", "next_scene": "city_arrest"}]},
-        "city_arrest": {"text": "Σύλληψη.", "choices": [{"label": "Φυλακή", "next_scene": "dungeon_cell"}]},
-        "dungeon_cell": {"text": "Κελί.", "choices": [{"label": "Απόδραση", "next_scene": "secret_passage"}]},
-        "secret_passage": {"text": "Γέρος.", "choices": [{"label": "Ποιος;", "next_scene": "meet_sage"}]},
-        "meet_sage": {"text": "Είμαι ο Αλέξιος.", "new_companion": "Σοφός Αλέξιος", "choices": [{"label": "Πάμε", "next_scene": "sage_stream_journey"}]},
-        "sage_stream_journey": {"text": "Ρυάκι.", "choices": [{"label": "Ξεκούραση", "next_scene": "sage_stream_lunch"}]},
-        "sage_stream_lunch": {"text": "Φαγητό.", "choices": [{"label": "Πάμε", "next_scene": "stone_crossroad_sage"}]},
-        "stone_crossroad_sage": {"text": "Πέτρα: Μαγεμένοι Δεξιά.", "choices": [{"label": "Δεξιά", "next_scene": "path_enchanted"}, {"label": "Αριστερά", "next_scene": "path_horseless"}]},
-        "find_horse_start": {"text": "Τσάντα.", "loot": ["Στιλέτο", "Ψωμί"], "choices": [{"label": "Ίχνη", "next_scene": "horse_found"}]},
-        "horse_found": {"text": "Άλογο!", "loot": ["Σπαθί", "Νερό"], "choices": [{"label": "Φύγε", "next_scene": "ride_away_river"}]},
-        "ride_away_river": {"text": "Στάση.", "choices": [{"label": "Φάε", "next_scene": "stream_rest"}]},
-        "stream_rest": {"text": "Έφαγες.", "consume_loot": ["Ψωμί"], "choices": [{"label": "Δρόμος", "next_scene": "stone_crossroad_horse"}]},
-        "stone_crossroad_horse": {"text": "Πέτρα με άλογο.", "choices": [{"label": "Δεξιά", "next_scene": "path_enchanted"}, {"label": "Αριστερά", "next_scene": "path_horseless"}]},
-        "meet_dwarves": {"text": "Νάνοι.", "loot": ["Χρυσός"], "choices": [{"label": "Χωριό", "next_scene": "dwarf_village"}]},
-        "dwarf_village": {"text": "Χωριό.", "choices": [{"label": "Γιορτή", "next_scene": "dwarf_feast"}]},
-        "dwarf_feast": {"text": "Γιορτή.", "loot": ["Μπύρα"], "choices": [{"label": "Ύπνος", "next_scene": "dwarf_sleep"}]},
-        "dwarf_sleep": {"text": "Ύπνος.", "choices": [{"label": "Ξύπνα", "next_scene": "dwarf_morning"}]},
-        "dwarf_morning": {"text": "Μπαλίν.", "new_companion": "Μπαλίν", "choices": [{"label": "Ταξίδι", "next_scene": "stone_crossroad_dwarf"}]},
-        "stone_crossroad_dwarf": {"text": "Πέτρα με Μπαλίν.", "choices": [{"label": "Δεξιά", "next_scene": "path_enchanted"}, {"label": "Αριστερά", "next_scene": "path_horseless"}]},
-        "path_enchanted": {"text": "Μαγεία.", "choices": [{"label": "Πύργος", "next_scene": "tower_found"}]},
-        "tower_found": {"text": "Σκοτεινός Πύργος.", "image_type": "tower", "choices": [{"label": "Μπες", "next_scene": "tower_entrance"}]},
-        "tower_entrance": {"text": "Μέσα.", "choices": []},
-        
-        # TIME LOOP (LEFT PATH)
+
+        # === ΜΟΝΟΠΑΤΙ 1: ΣΟΦΟΣ ΑΛΕΞΙΟΣ ===
+        "stay_sad": {
+            "text": (
+                "Μένετε καθιστός, αγκαλιάζοντας τα γόνατά σας, καθώς το σκοτάδι πυκνώνει. "
+                "Ξαφνικά, πολύ κοντά ακούγεται ένας λαρυγγώδης βρυχηθμός που παγώνει το αίμα στις φλέβες! "
+                "Μια τεράστια σκιά ξεκολλάει από τα δέντρα. Το να μείνετε εδώ σημαίνει βέβαιο θάνατο."
+            ),
+            "choices": [{"label": "Πεταχτείτε και τρέξτε χωρίς να κοιτάξετε πίσω", "next_scene": "run_to_edge"}]
+        },
+        "run_to_edge": {
+            "text": (
+                "Κλαδιά μαστιγώνουν το πρόσωπό σας καθώς τρέχετε μέσα από την πυκνή βλάστηση, χωρίς να βλέπετε δρόμο. "
+                "Η ανάσα σάς προδίδει, αλλά βγαίνετε στην άκρη του δάσους. "
+                "Μπροστά, σαν φάρος σωτηρίας, τρεμοπαίζουν τα φώτα των τειχών της πόλης."
+            ),
+            "choices": [{"label": "Πλησιάστε τη φρουρά της πόλης", "next_scene": "city_arrest"}]
+        },
+        "city_arrest": {
+            "text": (
+                "Ορμάτε προς τις πύλες, αλλά αλάβαρδες φράζουν τον δρόμο. "
+                "Οι φρουροί επιθεωρούν το σχισμένο σας ένδυμα με περιφρόνηση. "
+                "«Δεν υπάρχει χώρος για αλήτες εδώ», γαυγίζει ο λοχίας. «Στο μπουντρούμι θα βρούμε ποιος είσαι»."
+            ),
+            "choices": [{"label": "Πολύ αδύναμος για αντίσταση. Παραδοθείτε", "next_scene": "dungeon_cell"}]
+        },
+        "dungeon_cell": {
+            "text": (
+                "Το υγρό κελί μυρίζει μούχλα και απελπισία. "
+                "Καθισμένος στα άχυρα, συνειδητοποιείτε ότι η απώλεια μνήμης είναι μια μαγική κατάρα που μπλοκάρει το μυαλό. "
+                "Από θυμό, χτυπάτε τον τοίχο και παρατηρείτε ότι μια πέτρα κουνιέται."
+            ),
+            "choices": [{"label": "Σπρώξτε την πέτρα με τον ώμο", "next_scene": "secret_passage"}]
+        },
+        "secret_passage": {
+            "text": (
+                "Η πέτρα υποχωρεί, αποκαλύπτοντας ένα δύσοσμο πέρασμα προς την παλιά αποχέτευση. "
+                "Σέρνεστε στο σκοτάδι, γδέρνοντας τους αγκώνες σας, και τελικά βγαίνετε στην τάφρο. "
+                "Είστε βρώμικος, εξαντλημένος, αλλά επιτέλους ελεύθερος."
+            ),
+            "choices": [{"label": "Τιναχτείτε και κοιτάξτε γύρω", "next_scene": "meet_sage"}]
+        },
+        "meet_sage": {
+            "text": (
+                "Μια φιγούρα με γκρίζο μανδύα και ραβδί ξεπροβάλλει από τη σκιά του τείχους. Τα μάτια του γέρου λάμπουν με σοφία. "
+                "«Χαίρε, Γκάλαχαντ. Είμαι ο Αλέξιος», λέει σιγά. «Ο Σκοτεινός Αλχημιστής έκλεψε τη μνήμη σου. "
+                "Σε περίμενα για να βοηθήσω να αποκατασταθεί η δικαιοσύνη»."
+            ),
+            "new_companion": "Σοφός Αλέξιος",
+            "choices": [{"label": "Εμπιστευτείτε τον και φύγετε με τον Αλέξιο", "next_scene": "sage_stream_journey"}]
+        },
+        "sage_stream_journey": {
+            "text": (
+                "Περπατάτε με τον Αλέξιο από μυστικά μονοπάτια μέχρι το μεσημέρι. "
+                "Ο γέρος αποδεικνύεται εκπληκτικά ανθεκτικός. Σύντομα φτάνετε σε ένα γραφικό δασικό ρυάκι."
+            ),
+            "choices": [{"label": "Κάντε στάση στο νερό", "next_scene": "sage_stream_lunch"}]
+        },
+        "sage_stream_lunch": {
+            "text": (
+                "Ο Αλέξιος μοιράζεται το λιτό του γεύμα μαζί σας. "
+                "Σκύβοντας να πιείτε, βλέπετε την αντανάκλασή σας και συνειδητοποιείτε με τρόμο ότι δεν αναγνωρίζετε αυτό το πρόσωπο. "
+                "Το παρελθόν έχει διαγραφεί εντελώς."
+            ),
+            "choices": [{"label": "Βρείτε κουράγιο και προχωρήστε", "next_scene": "stone_crossroad_sage"}]
+        },
+        "stone_crossroad_sage": {
+            "text": (
+                "Μέχρι το βράδυ, το δάσος ανοίγει μπροστά σε έναν αρχαίο δρόμο. "
+                "Στη μέση στέκεται μια βρύα πέτρα με μια χοντροκομμένη επιγραφή: "
+                "'ΟΙ ΜΑΓΕΜΕΝΟΙ — ΔΕΞΙΑ. ΟΙ ΑΝΙΠΠΟΙ — ΑΡΙΣΤΕΡΑ'. Ο Αλέξιος συνοφρυώνεται συλλογισμένος."
+            ),
+            "choices": [
+                {"label": "Δεξιά (Διαδρομή των Μαγεμένων)", "next_scene": "path_enchanted"},
+                {"label": "Αριστερά (Διαδρομή των Ανίππων)", "next_scene": "path_horseless"}
+            ]
+        },
+
+        # === ΜΟΝΟΠΑΤΙ 2: ΑΛΟΓΟ ===
+        "find_horse_start": {
+            "text": (
+                "Σέρνεστε κάτω από τους θάμνους, παραμερίζοντας τις φτέρες. "
+                "Τελικά η τύχη σάς χαμογελά: βρίσκετε τον δερμάτινο σάκο σας. "
+                "Μέσα βρίσκονται ένα παλιό πιστό στιλέτο και ένα κομμάτι μπαγιάτικο ψωμί."
+            ),
+            "loot": ["Παλιό Στιλέτο", "Μπαγιάτικο Ψωμί"],
+            "choices": [{"label": "Ακολουθήστε τα ίχνη παραπέρα", "next_scene": "horse_found"}]
+        },
+        "horse_found": {
+            "text": (
+                "Τα ίχνη οδηγούν σε ένα ηλιόλουστο ξέφωτο. Εκεί, βόσκοντας ήσυχα, στέκεται το πολεμικό σας άλογο! "
+                "Χλιμιντρίζει χαρούμενα, αναγνωρίζοντας τον αφέντη του. "
+                "Στη σέλα βρίσκετε αληθινούς θησαυρούς: σπαθί, γεμάτο παγούρι και προμήθειες."
+            ),
+            "loot": ["Σπαθί Ιππότη", "Παγούρι Νερού", "Κομμάτι Λαρδί"],
+            "choices": [{"label": "Ανεβείτε στη σέλα και καλπάστε", "next_scene": "ride_away_river"}]
+        },
+        "ride_away_river": {
+            "text": (
+                "Ο άνεμος σφυρίζει στα αυτιά σας καθώς απομακρύνεστε από το καταραμένο μέρος. "
+                "Μετά από ώρες ξέφρενου καλπασμού, σταματάτε το άλογο σε ένα καθαρό ρυάκι για να πάρετε ανάσα."
+            ),
+            "choices": [{"label": "Ξεπεζέψτε και φάτε μεσημεριανό", "next_scene": "stream_rest"}]
+        },
+        "stream_rest": {
+            "text": (
+                "Τρώτε αχόρταγα το ψωμί, πίνοντας παγωμένο νερό. "
+                "Κοιτάζοντας στην καθρέφτινη επιφάνεια του ρυακιού, βλέπετε ένα ξένο πρόσωπο. "
+                "Η μνήμη είναι άδεια, ξύνοντας την ψυχή, αλλά το ζεστό πλευρό του αλόγου σάς ηρεμεί."
+            ),
+            "consume_loot": ["Μπαγιάτικο Ψωμί"],
+            "choices": [{"label": "Καλπάστε προς τον δρόμο", "next_scene": "stone_crossroad_horse"}]
+        },
+        "stone_crossroad_horse": {
+            "text": (
+                "Το μονοπάτι σάς οδηγεί σε έναν παλιό αυτοκρατορικό δρόμο. Σύντομα, μια τεράστια πέτρα φράζει τον δρόμο. "
+                "Η επιγραφή λέει: 'ΟΙ ΜΑΓΕΜΕΝΟΙ — ΔΕΞΙΑ. ΟΙ ΑΝΙΠΠΟΙ — ΑΡΙΣΤΕΡΑ'. "
+                "Το άλογο χτυπάει ανυπόμονα την οπλή του, περιμένοντας την εντολή σας."
+            ),
+            "choices": [
+                {"label": "Στρίψτε Δεξιά (Διαδρομή των Μαγεμένων)", "next_scene": "path_enchanted"},
+                {"label": "Στρίψτε Αριστερά (Διαδρομή των Ανίππων)", "next_scene": "path_horseless"}
+            ]
+        },
+
+        # === ΜΟΝΟΠΑΤΙ 3: ΝΑΝΟΙ ===
+        "meet_dwarves": {
+            "text": (
+                "Προχωράτε αποφασιστικά μπροστά. Ξαφνικά, δύο νάνοι πετάγονται από τη στροφή. "
+                "Βλέποντάς σας, πανικοβάλλονται, πετούν ένα βαρύ πουγκί και εξαφανίζονται στους θάμνους. "
+                "Μέσα έχει χρυσό, αλλά ο ήλιος δύει και το ταφικό κρύο του δάσους κυριεύει τα πάντα."
+            ),
+            "loot": ["Σακούλα Χρυσού"],
+            "choices": [
+                {"label": "Πέστε στα βρύα και προσπαθήστε να κοιμηθείτε", "next_scene": "sleep_cold"},
+                {"label": "Μαζέψτε δυνάμεις και ανάψτε φωτιά", "next_scene": "dwarf_village"}]
+        },
+        "sleep_cold": {"text": "Το κρύο περονιάζει ως το κόκαλο, η συνείδηση σβήνει...", "choices": [{"label": "...", "next_scene": "city_arrest"}]},
+        "dwarf_village": {
+            "text": (
+                "Ζεσταθήκατε δίπλα στη φωτιά όλη τη νύχτα και το πρωί φτάσατε στους πρόποδες των βουνών. "
+                "Εκεί, σκαλισμένο στο βράχο, βρίσκεται ένα χωριό. "
+                "Ο Γέροντας των νάνων βγαίνει να σας συναντήσει, έκπληκτος από την τιμιότητά σας."
+            ),
+            "choices": [{"label": "Επιστρέψτε τον χρυσό στους ιδιοκτήτες", "next_scene": "dwarf_feast"}]
+        },
+        "dwarf_feast": {
+            "text": (
+                "Προς τιμήν του ευγενούς καλεσμένου, οι νάνοι κάνουν γλέντι! "
+                "Σας ρωτούν για τη γενιά και τα κατορθώματά σας, αλλά εσείς σιωπάτε. "
+                "Προσπαθώντας να θυμηθείτε έστω κάτι, καταλαβαίνετε ότι στο μυαλό υπάρχει μόνο ομίχλη."
+            ),
+            "loot": ["Νανίσια Μπύρα", "Ψητό Κότσι"],
+            "choices": [{"label": "Ομολογήστε την απώλεια μνήμης", "next_scene": "dwarf_sleep"}]
+        },
+        "dwarf_sleep": {
+            "text": (
+                "Οι νάνοι κουνούν τα κεφάλια τους με συμπόνια. "
+                "«Η νύχτα φέρνει συμβουλές», λέει ο Γέροντας και σας οδηγεί σε ένα μαλακό κρεβάτι. "
+                "Βυθίζεστε αμέσως σε βαθύ ύπνο."
+            ),
+            "choices": [{"label": "Ξυπνήστε την αυγή", "next_scene": "dwarf_morning"}]
+        },
+        "dwarf_morning": {
+            "text": (
+                "Ξυπνάτε γεμάτος δυνάμεις. Ο Γέροντας κράτησε τον λόγο του: "
+                "στην πύλη σάς περιμένει ο σκληρός ιχνηλάτης Μπαλίν, έτοιμος να σας οδηγήσει στους μάγους."
+            ),
+            "choices": [{"label": "Ξεκινήστε το ταξίδι", "next_scene": "dwarf_hike_start"}]
+        },
+        "dwarf_hike_start": {
+            "text": (
+                "Ο Μπαλίν ελέγχει τη χορδή της βαλλίστρας και σας γνέφει. "
+                "Αφήνετε το φιλόξενο χωριό και εισχωρείτε στις άγριες ​​εκτάσεις. "
+                "Η μεγάλη σας αναζήτηση για την αλήθεια ξεκινά."
+            ),
+            "new_companion": "Ιχνηλάτης Μπαλίν",
+            "choices": [{"label": "Περπατήστε όλη μέρα", "next_scene": "dwarf_night_camp"}]
+        },
+        "dwarf_night_camp": {
+            "text": (
+                "Μέχρι το βράδυ, βρίσκετε μια άνετη σπηλιά. Ο Μπαλίν ανάβει μια φωτιά χωρίς καπνό. "
+                "Πηγαίνετε για ύπνο πρώτος, ενώ ο νάνος κρατά σκοπιά, ακούγοντας τους ήχους της νύχτας."
+            ),
+            "choices": [{"label": "Προσπαθήστε να κοιμηθείτε", "next_scene": "dwarf_theft_attempt"}]
+        },
+        "dwarf_theft_attempt": {
+            "text": (
+                "Σας ξυπνάει θόρυβος και οι βρισιές του Μπαλίν! "
+                "Μικρά πλάσματα των σπηλαίων προσπαθούν να σύρουν τα πράγματά σας στο σκοτάδι. "
+                "Πρέπει να δράσετε αμέσως!"
+            ),
+            "choices": [{"label": "Αρπάξτε όπλο και διώξτε τους κλέφτες", "next_scene": "stone_crossroad_dwarf"}]
+        },
+        "stone_crossroad_dwarf": {
+            "text": (
+                "Απωθείτε τους κλέφτες και βγαίνετε στον δρόμο το πρωί. "
+                "Μπροστά σας στέκεται εκείνη η πέτρα: 'ΟΙ ΜΑΓΕΜΕΝΟΙ — ΔΕΞΙΑ. ΟΙ ΑΝΙΠΠΟΙ — ΑΡΙΣΤΕΡΑ'. "
+                "Ο Μπαλίν στηρίζεται στο τσεκούρι του, περιμένοντας απόφαση."
+            ),
+            "choices": [
+                {"label": "Δεξιά (Διαδρομή των Μαγεμένων)", "next_scene": "path_enchanted"},
+                {"label": "Αριστερά (Διαδρομή των Ανίππων)", "next_scene": "path_horseless"}
+            ]
+        },
+
+        # === ΤΕΛΟΣ: ΠΥΡΓΟΣ ===
+        "path_enchanted": {
+            "text": (
+                "Στρίβετε δεξιά. Ο αέρας εδώ γίνεται πυκνός, παχύρρευστος και μυρίζει όζον. "
+                "Τα δέντρα γύρω είναι παραμορφωμένα από τη μαγεία, σαν παγωμένα σε αγωνία. "
+                "Ο δρόμος σάς οδηγεί στην πηγή του προβλήματός σας."
+            ),
+            "choices": [{"label": "Συνεχίστε προς τον στόχο", "next_scene": "tower_found"}]
+        },
+        "tower_found": {
+            "text": (
+                "Το δάσος τελειώνει απότομα. Σε ένα καμένο ξέφωτο υψώνεται ο Πύργος του Σκοτεινού Αλχημιστή. "
+                "Η αιχμή του από μαύρο οψιδιανό τρυπάει τον ουρανό και γύρω επικρατεί νεκρική σιγή. "
+                "Η πόρτα εισόδου είναι μισάνοιχτη, σαν να σας καλεί σε παγίδα."
+            ),
+            "image_type": "tower",
+            "choices": [
+                {"label": "Μπείτε τολμηρά στην κύρια είσοδο", "next_scene": "tower_entrance"},
+                {"label": "Ψάξτε προσεκτικά για άλλο δρόμο", "next_scene": "tower_side_entrance"}
+            ]
+        },
+        "tower_entrance": {
+            "text": "Σπρώχνετε τα βαριά φύλλα και μπαίνετε στο ημίφως. Η ηχώ των βημάτων σας απλώνεται στην αίθουσα... (Πλοκή υπό ανάπτυξη)",
+            "choices": []
+        },
+        "tower_side_entrance": {
+            "text": "Παραμερίζοντας τον αγκαθωτό κισσό, βρίσκετε ένα στενό παράθυρο προς το υπόγειο. Από εκεί έρχεται κρύο... (Πλοκή υπό ανάπτυξη)",
+            "choices": []
+        },
+
+        # === ΧΡΟΝΙΚΟΣ ΒΡΟΧΟΣ (ΑΡΙΣΤΕΡΟ ΜΟΝΟΠΑΤΙ) ===
         "path_horseless": {
-            "text": "Πάτε αριστερά. Σκοτάδι.",
-            "choices": [{"label": "Προχώρα", "next_scene": "ambush_loop_hit"}]
+            "text": (
+                "Επιλέγετε τον αριστερό δρόμο, αγνοώντας την προειδοποίηση. "
+                "Στην αρχή ο δρόμος φαίνεται ειρηνικός, τα πουλιά κελαηδούν και ο ήλιος λάμπει μέσα από τα φύλλα. "
+                "Αλλά μόλις ο ήλιος αγγίξει τον ορίζοντα, το δάσος βυθίζεται ακαριαία σε αδιαπέραστο, αφύσικο σκοτάδι."
+            ),
+            "choices": [{"label": "Προχωρήστε επιφυλακτικά", "next_scene": "ambush_loop_hit"}]
         },
         "ambush_loop_hit": {
-            "text": "Χτύπημα στο κεφάλι! Λιποθυμάτε...",
-            "choices": [{"label": "Ξυπνήστε", "next_scene": "start"}]
+            "text": (
+                "Ξαφνικά, ένα σφύριγμα σκίζει τον αέρα από πίσω! Δεν προλαβαίνετε να αντιδράσετε. "
+                "Ένα βαρύ χτύπημα με ρόπαλο στο πίσω μέρος του κεφαλιού σάς κόβει την ανάσα. "
+                "Το τελευταίο πράγμα που ακούτε πριν βυθιστείτε στο κενό είναι ένα μοχθηρό, κοροϊδευτικό γέλιο..."
+            ),
+            "choices": [{"label": "Ξυπνήστε από τον εφιάλτη", "next_scene": "start"}]
         }
     }
 }
