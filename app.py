@@ -1,50 +1,39 @@
-import json
+import os
 from flask import Flask, render_template, session, redirect, url_for, request
 from data import SCENARIOS, LANGUAGES, KNIGHT_ART
 
 app = Flask(__name__)
-# В реальном приложении этот ключ должен быть длинным, сложным и храниться в секрете!
-app.secret_key = 'your_super_secret_key_for_session_management'
+app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key_change_me')
 
-# Инициализация игрового состояния в сессии
 def init_game():
-    """Устанавливает начальное состояние игры."""
+    """Полный сброс состояния игры"""
     session.clear()
     session['current_scene'] = 'start'
     session['inventory'] = []
     session['companions'] = []
-    # Устанавливаем язык по умолчанию на русский
+    # По умолчанию язык русский, если не был установлен ранее
+    # (можно сохранить язык, если нужно, но session.clear() удалит всё)
     session['current_lang'] = 'ru'
-    print("Игра инициализирована/перезапущена.")
 
-# --- Вспомогательные функции для управления состоянием ---
-
-def update_inventory_and_companions(scene_data):
-    """Обновляет инвентарь и спутников на основе данных текущей сцены."""
-    # Добавление предметов
+def update_game_state(scene_data):
     if 'loot' in scene_data:
         for item in scene_data['loot']:
             if item not in session['inventory']:
                 session['inventory'].append(item)
     
-    # Удаление (потребление) предметов
     if 'consume_loot' in scene_data:
         for item in scene_data['consume_loot']:
             if item in session['inventory']:
                 session['inventory'].remove(item)
     
-    # Добавление спутника
     if 'new_companion' in scene_data:
         companion = scene_data['new_companion']
         if companion not in session['companions']:
             session['companions'].append(companion)
 
-
-# --- Основной маршрут игры ---
-
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-    # 1. Обработка перезапуска
+    # 1. Рестарт через кнопку в меню
     if request.args.get('restart'):
         init_game()
         return redirect(url_for('game'))
@@ -53,43 +42,42 @@ def game():
     if 'current_scene' not in session:
         init_game()
 
-    # 3. Обработка выбора (POST запрос)
+    # 3. Обработка хода игрока
     if request.method == 'POST':
         next_scene_id = request.form.get('next_scene')
         current_lang = session.get('current_lang', 'ru')
         
-        # Проверка на существование следующей сцены
-        if next_scene_id and next_scene_id in SCENARIOS.get(current_lang, {}):
-            # Получаем данные текущей сцены для применения эффектов ПЕРЕД сменой сцены
-            current_scene_data = SCENARIOS[current_lang][session['current_scene']]
-            update_inventory_and_companions(current_scene_data)
-            
-            # Обновляем текущую сцену
-            session['current_scene'] = next_scene_id
-        else:
-            print(f"ОШИБКА: Недействительная или отсутствующая сцена: {next_scene_id}")
-            # Если сцена не найдена, остаемся на текущей сцене, чтобы не сломать игру.
-    
-    # 4. Обработка смены языка (GET параметр)
+        if next_scene_id:
+            # === ИСПРАВЛЕНИЕ: СБРОС ПРИ ПЕТЛЕ ВРЕМЕНИ ===
+            # Если переход ведет в 'start', мы делаем полный сброс (init_game),
+            # чтобы очистить инвентарь и спутников.
+            if next_scene_id == 'start':
+                # Сохраним текущий язык перед очисткой, чтобы не сбрасывался на RU
+                current_lang_saved = session.get('current_lang', 'ru')
+                init_game()
+                session['current_lang'] = current_lang_saved
+                return redirect(url_for('game'))
+
+            # Обычный переход
+            if next_scene_id in SCENARIOS.get(current_lang, {}):
+                current_scene_data = SCENARIOS[current_lang][session['current_scene']]
+                update_game_state(current_scene_data)
+                session['current_scene'] = next_scene_id
+
+    # 4. Смена языка
     requested_lang = request.args.get('lang')
     if requested_lang and requested_lang in LANGUAGES:
-        # Пытаемся сохранить текущую сцену при смене языка
         session['current_lang'] = requested_lang
-        # Перенаправляем, чтобы избавиться от параметра lang в URL
         return redirect(url_for('game'))
 
-    # 5. Получение данных для рендеринга
+    # 5. Подготовка данных для отображения
     current_lang = session.get('current_lang', 'ru')
     scene_id = session.get('current_scene', 'start')
-    
-    # Получаем словарь сценариев для текущего языка
     lang_scenarios = SCENARIOS.get(current_lang, SCENARIOS['ru'])
     
-    # Получаем данные текущей сцены. Если сцена не найдена (например, ошибка в data.py), 
-    # используем начальную сцену как запасной вариант.
+    # Защита от несуществующей сцены
     scene = lang_scenarios.get(scene_id, lang_scenarios['start'])
 
-    # 6. Рендеринг шаблона
     return render_template(
         'index.html',
         scene=scene,
@@ -102,13 +90,7 @@ def game():
 
 @app.route('/')
 def index():
-    # Если пользователь зашел на http://ip:5000/, перекидываем его на /game
     return redirect(url_for('game'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
-if __name__ == '__main__':
-    # В продакшене используйте Gunicorn или другой WSGI-сервер
-    # Для разработки запускаем с включенным дебагом
-    app.run(debug=True)
