@@ -100,6 +100,14 @@ def game():
         knight_art=KNIGHT_ART
     )
 
+@app.route('/')
+def index():
+    # Если пользователь зашел на http://ip:5000/, перекидываем его на /game
+    return redirect(url_for('game'))
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
 if __name__ == '__main__':
     # В продакшене используйте Gunicorn или другой WSGI-сервер
     # Для разработки запускаем с включенным дебагом
