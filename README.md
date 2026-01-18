@@ -1,1 +1,3 @@
 # questgame
+
+Small test quest.
