@@ -40,6 +40,19 @@ def game():
             if next_scene_id in SCENARIOS.get(current_lang, {}):
                 current_scene_data = SCENARIOS[current_lang][session['current_scene']]
                 update_game_state(session, current_scene_data)
+                # Check if next scene has random outcomes
+                next_scene_data = SCENARIOS[current_lang][next_scene_id]
+                if 'random_outcomes' in next_scene_data:
+                    import random
+                    outcomes = next_scene_data['random_outcomes']
+                    if isinstance(outcomes, list):
+                        result_scene = random.choice(outcomes)
+                        if result_scene == "darksouls_victory":
+                            session['ds_victories'] = session.get('ds_victories', 0) + 1
+                            if session['ds_victories'] < 3:
+                                result_scene = 'darksouls_fight_again'
+                        next_scene_id = result_scene
+                
                 session['current_scene'] = next_scene_id
 
     # 4. Смена языка

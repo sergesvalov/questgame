@@ -1,9 +1,9 @@
 def init_game(session):
     """Полный сброс состояния игры"""
-    session.clear()
     session['current_scene'] = 'start'
     session['inventory'] = []
     session['companions'] = []
+    session['ds_victories'] = 0
     # По умолчанию язык русский, если не был установлен ранее
     # (можно сохранить язык, если нужно, но session.clear() удалит всё)
     session['current_lang'] = 'ru'
