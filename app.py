@@ -68,10 +68,19 @@ def game():
     
     # Защита от несуществующей сцены
     scene = lang_scenarios.get(scene_id, lang_scenarios['start'])
+    
+    # Filter choices based on conditions if they exist
+    filtered_scene = scene.copy()
+    if 'choices' in filtered_scene:
+        filtered_choices = []
+        for choice in filtered_scene['choices']:
+            if 'condition' not in choice or choice['condition'](session):
+                filtered_choices.append(choice)
+        filtered_scene['choices'] = filtered_choices
 
     return render_template(
         'index.html',
-        scene=scene,
+        scene=filtered_scene,
         inventory=session.get('inventory', []),
         companions=session.get('companions', []),
         current_lang=current_lang,
