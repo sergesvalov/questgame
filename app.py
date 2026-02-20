@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for, request
-from data import SCENARIOS, LANGUAGES, KNIGHT_ART, UI_TRANSLATIONS
+from data import LANGUAGES, KNIGHT_ART, UI_TRANSLATIONS
+from scenarios import SCENARIOS
 from game_logic import init_game, update_game_state
 
 app = Flask(__name__)
