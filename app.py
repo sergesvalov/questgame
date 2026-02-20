@@ -1,8 +1,8 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for, request
-from data import LANGUAGES, KNIGHT_ART, UI_TRANSLATIONS
+from data import LANGUAGES, UI_TRANSLATIONS
 from scenarios import SCENARIOS
-from game_logic import init_game, update_game_state
+from game_logic import init_game, process_turn, get_filtered_scene
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key_change_me')
@@ -26,34 +26,8 @@ def game():
         current_lang = session.get('current_lang', 'ru')
         
         if next_scene_id:
-            # === ИСПРАВЛЕНИЕ: СБРОС ПРИ ПЕТЛЕ ВРЕМЕНИ ===
-            # Если переход ведет в 'start', мы делаем полный сброс (init_game),
-            # чтобы очистить инвентарь и спутников.
-            if next_scene_id == 'start':
-                # Сохраним текущий язык перед очисткой, чтобы не сбрасывался на RU
-                current_lang_saved = session.get('current_lang', 'ru')
-                init_game(session)
-                session['current_lang'] = current_lang_saved
-                return redirect(url_for('game'))
-
-            # Обычный переход
-            if next_scene_id in SCENARIOS.get(current_lang, {}):
-                current_scene_data = SCENARIOS[current_lang][session['current_scene']]
-                update_game_state(session, current_scene_data)
-                # Check if next scene has random outcomes
-                next_scene_data = SCENARIOS[current_lang][next_scene_id]
-                if 'random_outcomes' in next_scene_data:
-                    import random
-                    outcomes = next_scene_data['random_outcomes']
-                    if isinstance(outcomes, list):
-                        result_scene = random.choice(outcomes)
-                        if result_scene == "darksouls_victory":
-                            session['ds_victories'] = session.get('ds_victories', 0) + 1
-                            if session['ds_victories'] < 3:
-                                result_scene = 'darksouls_fight_again'
-                        next_scene_id = result_scene
-                
-                session['current_scene'] = next_scene_id
+            process_turn(session, SCENARIOS, next_scene_id, current_lang)
+            return redirect(url_for('game'))
 
     # 4. Смена языка
     requested_lang = request.args.get('lang')
@@ -70,13 +44,7 @@ def game():
     scene = lang_scenarios.get(scene_id, lang_scenarios['start'])
     
     # Filter choices based on conditions if they exist
-    filtered_scene = scene.copy()
-    if 'choices' in filtered_scene:
-        filtered_choices = []
-        for choice in filtered_scene['choices']:
-            if 'condition' not in choice or choice['condition'](session):
-                filtered_choices.append(choice)
-        filtered_scene['choices'] = filtered_choices
+    filtered_scene = get_filtered_scene(scene, session)
 
     return render_template(
         'index.html',
@@ -85,7 +53,6 @@ def game():
         companions=session.get('companions', []),
         current_lang=current_lang,
         languages=LANGUAGES,
-        knight_art=KNIGHT_ART,
         ui=UI_TRANSLATIONS.get(current_lang, UI_TRANSLATIONS['ru'])
     )
 
