@@ -45,25 +45,13 @@
                 <div>
                     <!-- Заголовок Статуса/Инвентаря (Перевод) -->
                     <h2 class="text-xl font-bold mb-4 border-b border-gray-500 pb-2">
-                        {% if current_lang == 'ru' %}
-                            Инвентарь и Статус
-                        {% elif current_lang == 'en' %}
-                            Inventory & Status
-                        {% elif current_lang == 'el' %}
-                            Απογραφή & Κατάσταση
-                        {% endif %}
+                        {{ ui.inventory_title }}
                     </h2>
 
                     <!-- Блок Инвентаря -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold mb-2">
-                            {% if current_lang == 'ru' %}
-                                Снаряжение:
-                            {% elif current_lang == 'en' %}
-                                Loot:
-                            {% elif current_lang == 'el' %}
-                                Λάφυρα:
-                            {% endif %}
+                            {{ ui.loot }}
                         </h3>
                         <ul class="list-disc list-inside space-y-1 text-sm">
                             {% if inventory %}
@@ -73,13 +61,7 @@
                                 {% endfor %}
                             {% else %}
                                 <li class="text-gray-400">
-                                    {% if current_lang == 'ru' %}
-                                        Пусто
-                                    {% elif current_lang == 'en' %}
-                                        Empty
-                                    {% elif current_lang == 'el' %}
-                                        Κενό
-                                    {% endif %}
+                                    {{ ui.empty_inventory }}
                                 </li>
                             {% endif %}
                         </ul>
@@ -88,13 +70,7 @@
                     <!-- Блок Спутников -->
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold mb-2">
-                            {% if current_lang == 'ru' %}
-                                Спутники:
-                            {% elif current_lang == 'en' %}
-                                Companions:
-                            {% elif current_lang == 'el' %}
-                                Συντροφιά:
-                            {% endif %}
+                            {{ ui.companions }}
                         </h3>
                         <ul class="list-disc list-inside space-y-1 text-sm">
                             {% if companions %}
@@ -104,13 +80,7 @@
                                 {% endfor %}
                             {% else %}
                                 <li class="text-gray-400">
-                                    {% if current_lang == 'ru' %}
-                                        Один в пути
-                                    {% elif current_lang == 'en' %}
-                                        Traveling alone
-                                    {% elif current_lang == 'el' %}
-                                        Ταξιδεύετε μόνος
-                                    {% endif %}
+                                    {{ ui.alone }}
                                 </li>
                             {% endif %}
                         </ul>
@@ -123,14 +93,7 @@
                 <!-- Меню выбора языка -->
                 <div class="mt-6 pt-4 border-t border-gray-500">
                     <h3 class="text-sm font-semibold mb-2">
-                        {% if current_lang == 'ru' %}
-                            Язык
-                        {% elif current_lang == 'en' %}
-                            Language
-                        {% elif current_lang == 'el' %}
-                            Γλώσσα
-                        {% endif %}
-                        :
+                        {{ ui.language }}
                     </h3>
                     <div class="flex space-x-2">
                         {% for lang_code, lang_name in languages.items() %}
@@ -147,13 +110,7 @@
                 <!-- Кнопка перезапуска игры -->
                 <a href="{{ url_for('game', restart=True) }}" 
                    class="mt-4 block text-center py-2 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold transition">
-                    {% if current_lang == 'ru' %}
-                        Начать заново
-                    {% elif current_lang == 'en' %}
-                        Restart Game
-                    {% elif current_lang == 'el' %}
-                        Επανεκκίνηση
-                    {% endif %}
+                    {{ ui.restart }}
                 </a>
             </div>
 
@@ -161,13 +118,7 @@
             <div class="w-full md:w-2/3 p-4 md:p-8">
                 <!-- Главный заголовок -->
                 <h1 class="text-2xl font-extrabold mb-6 text-center text-story">
-                    {% if current_lang == 'ru' %}
-                        Сэр Галахад: Забытый Рыцарь
-                    {% elif current_lang == 'en' %}
-                        Sir Galahad: The Forgotten Knight
-                    {% elif current_lang == 'el' %}
-                        Ο Σερ Γκάλαχαντ: Ο Ξεχασμένος Ιππότης
-                    {% endif %}
+                    {{ ui.main_title }}
                 </h1>
                 
                 <!-- Блок с текстом сцены -->
@@ -177,13 +128,7 @@
                     {% if scene.question %}
                         <!-- Если есть дополнительный вопрос/призыв к действию -->
                         <p class="mt-4 font-semibold text-story">
-                            {% if current_lang == 'ru' %}
-                                Вопрос:
-                            {% elif current_lang == 'en' %}
-                                Question:
-                            {% elif current_lang == 'el' %}
-                                Ερώτηση:
-                            {% endif %}
+                            {{ ui.question }}
                             {{ scene.question }}
                         </p>
                     {% endif %}
@@ -203,13 +148,7 @@
                         {% else %}
                             <!-- Сообщение, если выбора нет (конец ветки) -->
                             <p class="text-center p-4 bg-yellow-100 text-yellow-800 rounded-lg">
-                                {% if current_lang == 'ru' %}
-                                    Конец текущей ветки. Нажмите "Начать заново" для продолжения.
-                                {% elif current_lang == 'en' %}
-                                    End of the current branch. Click "Restart Game" to continue.
-                                {% elif current_lang == 'el' %}
-                                    Τέλος του τρέχοντος κλάδου. Πατήστε "Επανεκκίνηση" για να συνεχίσετε.
-                                {% endif %}
+                                {{ ui.end_of_branch }}
                             </p>
                         {% endif %}
                     </div>

@@ -1,46 +1,23 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for, request
-from data import SCENARIOS, LANGUAGES, KNIGHT_ART
+from data import SCENARIOS, LANGUAGES, KNIGHT_ART, UI_TRANSLATIONS
+from game_logic import init_game, update_game_state
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key_change_me')
 
-def init_game():
-    """Полный сброс состояния игры"""
-    session.clear()
-    session['current_scene'] = 'start'
-    session['inventory'] = []
-    session['companions'] = []
-    # По умолчанию язык русский, если не был установлен ранее
-    # (можно сохранить язык, если нужно, но session.clear() удалит всё)
-    session['current_lang'] = 'ru'
 
-def update_game_state(scene_data):
-    if 'loot' in scene_data:
-        for item in scene_data['loot']:
-            if item not in session['inventory']:
-                session['inventory'].append(item)
-    
-    if 'consume_loot' in scene_data:
-        for item in scene_data['consume_loot']:
-            if item in session['inventory']:
-                session['inventory'].remove(item)
-    
-    if 'new_companion' in scene_data:
-        companion = scene_data['new_companion']
-        if companion not in session['companions']:
-            session['companions'].append(companion)
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     # 1. Рестарт через кнопку в меню
     if request.args.get('restart'):
-        init_game()
+        init_game(session)
         return redirect(url_for('game'))
 
     # 2. Инициализация, если сессия пуста
     if 'current_scene' not in session:
-        init_game()
+        init_game(session)
 
     # 3. Обработка хода игрока
     if request.method == 'POST':
@@ -54,14 +31,14 @@ def game():
             if next_scene_id == 'start':
                 # Сохраним текущий язык перед очисткой, чтобы не сбрасывался на RU
                 current_lang_saved = session.get('current_lang', 'ru')
-                init_game()
+                init_game(session)
                 session['current_lang'] = current_lang_saved
                 return redirect(url_for('game'))
 
             # Обычный переход
             if next_scene_id in SCENARIOS.get(current_lang, {}):
                 current_scene_data = SCENARIOS[current_lang][session['current_scene']]
-                update_game_state(current_scene_data)
+                update_game_state(session, current_scene_data)
                 session['current_scene'] = next_scene_id
 
     # 4. Смена языка
@@ -85,7 +62,8 @@ def game():
         companions=session.get('companions', []),
         current_lang=current_lang,
         languages=LANGUAGES,
-        knight_art=KNIGHT_ART
+        knight_art=KNIGHT_ART,
+        ui=UI_TRANSLATIONS.get(current_lang, UI_TRANSLATIONS['ru'])
     )
 
 @app.route('/')
