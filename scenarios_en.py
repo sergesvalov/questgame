@@ -269,7 +269,73 @@
             "The bushes look suspiciously identical to the clouds, only painted green. Beneath your feet are perfectly square brick platforms hovering in mid-air, alongside massive gold coins. "
             "Alexei, suddenly wearing red and blue plumber's overalls with an 'M' on his cap, adjusts his mustache. 'Listen closely, Galahad... The Alchemist has kidnapped Princess Peach! We must rescue her!'"
         ),
-        "choices": [{"label": "Jump on a turtle shell and set off to find Bowser's Castle", "next_scene": "start"}]
+        "image_type": "mario",
+        "choices": [{"label": "Set off to find the castle", "next_scene": "mario_level_1"}]
+    },
+    "mario_level_1": {
+        "text": (
+            "Level 1-1. Your trusty bastard sword has turned into a handful of square pixels. Strolling angrily towards you is a brown mushroom with eyes. "
+            "Sage Alexei shouts: 'Use the ancient platforming technique, Galahad! Jump on its head!' "
+            "You awkwardly leap in your heavy knight's armor, flattening the mushroom like a pancake. Ahead lies a green pipe leading to the next trial."
+        ),
+        "image_type": "mario",
+        "choices": [{"label": "Climb into the pipe and proceed to the next level", "next_scene": "mario_level_2"}]
+    },
+    "mario_level_2": {
+        "text": (
+            "Level 1-2. Emerging from the pipe, you find yourself before a small stone castle. After tossing aside a couple of upright-walking turtles, you kick the door down. "
+            "Inside, there's no Dark Alchemist, nor complex traps. Only a strange little man with a mushroom head, who informs you in a squeaky voice: "
+            "'Thank you, Sir Galahad! But our princess is in another castle!' Sage Alexei angrily tugs at his mustache and points to the exit."
+        ),
+        "image_type": "mario",
+        "choices": [{"label": "Accept your fate and move on", "next_scene": "mario_level_3"}]
+    },
+    "mario_level_3": {
+        "text": (
+            "Level 2-2. The next stage of your journey takes you underwater. You hold your breath and dive. "
+            "To your horror, your heavy plate armor drags you to the bottom like an anchor! Pixelated squids swim past you, "
+            "while Alexei, puffing his cheeks, gestures frantically. You stubbornly walk along the very bottom, fighting off fish with your armored fists, until you reach the saving shore."
+        ),
+        "image_type": "mario",
+        "choices": [{"label": "Crawl onto dry land, spitting out seaweed", "next_scene": "mario_level_4"}]
+    },
+    "mario_level_4": {
+        "text": (
+            "Level 8-4. Looming before you is the citadel of the Dark Alchemist, surrounded by boiling lava. The heat in the throne room is unbearable. "
+            "Waiting on the suspension bridge is the enemy himself, mutated into a giant spiked turtle with red hair! "
+            "The Alchemist spews a wave of flame from his maw. Behind him sparkles a lifesaving lever shaped like an axe."
+        ),
+        "image_type": "mario",
+        "choices": [
+            {"label": "Try to poke the turtle with your bare fists", "next_scene": "mario_boss_death"},
+            {"label": "Make a crazy leap of faith straight for the axe", "next_scene": "mario_boss_victory"}
+        ]
+    },
+    "mario_boss_death": {
+        "text": (
+            "With a battle cry, you rush at the Alchemist. Unfortunately, the laws of this universe are cruel to fans of close combat. "
+            "A single touch of his spiked shell - and you flap your arms comically to 8-bit retro music, before tumbling into the lava."
+        ),
+        "image_type": "mario",
+        "choices": [{"label": "GAME OVER. Start again", "next_scene": "start"}]
+    },
+    "mario_boss_victory": {
+        "text": (
+            "Inspired by Sage Alexei's acrobatics, you take a running start, miraculously fly over the wall of fire, and land squarely on the glowing axe! "
+            "A sharp click echoes. The suspension bridge vanishes instantly, and the Turtle-Alchemist plummets into the boiling lava with a gurgling roar. "
+            "You catch your breath and step into the adjacent room..."
+        ),
+        "image_type": "mario",
+        "choices": [{"label": "Approach the rescued Princess", "next_scene": "mario_ending"}]
+    },
+    "mario_ending": {
+        "text": (
+            "Instead of the beautiful Princess Peach, standing in the room is... your loyal warhorse. A pink plastic crown sits crookedly on its head. "
+            "The horse looks at you sadly, melancholically chewing a pixelated bundle of hay. Sage Alexei, adjusting his cap, declares philosophically: "
+            "'It seems, Galahad, the true princess was the horse we found along the way.'"
+        ),
+        "image_type": "mario",
+        "choices": [{"label": "Game Over! Start anew", "next_scene": "start"}]
     },
 
     # --- MINECRAFT BRANCH (If we have Balin the Dwarf) ---

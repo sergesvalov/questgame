@@ -113,8 +113,13 @@
 
                     <!-- Портрет Рыцаря -->
                     <div class="rounded-lg overflow-hidden border-2 border-gray-600 shadow-md">
+                        {% if scene.image_type == 'mario' %}
+                        <img src="{{ url_for('static', filename='knight_mario.png') }}" alt="Sir Galahad Mario Portrait"
+                            class="w-full h-auto object-cover">
+                        {% else %}
                         <img src="{{ url_for('static', filename='knight.png') }}" alt="Sir Galahad Portrait"
                             class="w-full h-auto object-cover">
+                        {% endif %}
                     </div>
                 </div>
 
